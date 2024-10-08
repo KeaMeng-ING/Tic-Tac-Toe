@@ -1,31 +1,75 @@
+const squares = document.querySelectorAll(".square");
+let playerXTurn = true;
+
 const board = [
   ["", "", ""],
   ["", "", ""],
   ["", "", ""],
 ];
 
-function player(name, marker) {
-  return { name, marker };
-}
+squares.forEach((element) => {
+  element.addEventListener("click", (event) => {
+    const col = event.target.getAttribute("data-col");
+    const row = event.target.getAttribute("data-row");
 
-const playerX = player("me", "X");
-const playerO = player("you", "O");
-let playerXTurn = true;
-let gameOn = true;
+    createMove(col, row, event.target);
 
-function createMove(col, row) {
-  if (playerXTurn) {
-    board[row][col] = "X";
-  } else {
-    board[row][col] = "O";
+    // console.log(`Square clicked at col: ${col}, row: ${row}`);
+  });
+});
+
+function createMove(col, row, event) {
+  const marker = playerXTurn ? "x" : "o";
+  if (board[row][col] == "") {
+    board[row][col] = marker;
+    event.textContent = marker;
   }
-  playerXTurn = !playerXTurn;
+
+  if (checkWin(marker)) {
+    console.log("game win");
+  } else {
+    playerXTurn = !playerXTurn;
+  }
 }
 
-for (let i = 0; i < 2; i++) {
-  col = prompt("What is your next play col?") - 1;
-  row = prompt("What is your next play row?") - 1;
+function checkWin(marker) {
+  // Check rows
+  for (let row = 0; row < 3; row++) {
+    if (
+      board[row][0] === marker &&
+      board[row][1] === marker &&
+      board[row][2] === marker
+    ) {
+      return true;
+    }
+  }
 
-  createMove(col, row);
-  console.log(board);
+  // Check columns
+  for (let col = 0; col < 3; col++) {
+    if (
+      board[0][col] === marker &&
+      board[1][col] === marker &&
+      board[2][col] === marker
+    ) {
+      return true;
+    }
+  }
+
+  // Check diagonals
+  if (
+    board[0][0] === marker &&
+    board[1][1] === marker &&
+    board[2][2] === marker
+  ) {
+    return true;
+  }
+  if (
+    board[0][2] === marker &&
+    board[1][1] === marker &&
+    board[2][0] === marker
+  ) {
+    return true;
+  }
+
+  return false;
 }
