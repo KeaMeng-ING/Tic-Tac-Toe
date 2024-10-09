@@ -26,7 +26,8 @@ function createMove(col, row, event) {
   }
 
   if (checkWin(marker)) {
-    console.log("game win");
+    const dialog = document.querySelector("#dialog-container");
+    dialog.showModal();
   } else {
     playerXTurn = !playerXTurn;
   }
