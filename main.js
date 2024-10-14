@@ -1,5 +1,13 @@
 const squares = document.querySelectorAll(".square");
 let playerXTurn = true;
+const playAgainButton = document.querySelector(".play-again-button");
+const dialog = document.querySelector("#dialog-container");
+const player = document.querySelector(".player");
+const player1Point = document.querySelectorAll(".one-score");
+
+playAgainButton.addEventListener("click", () => {
+  resetGame();
+});
 
 const board = [
   ["", "", ""],
@@ -7,13 +15,31 @@ const board = [
   ["", "", ""],
 ];
 
+const createPlayer = (name, symbol, point) => {
+  return {
+    name,
+    symbol,
+    point,
+    addPoint: () => {
+      point += 1;
+    },
+    showPoint: () => {
+      console.log(point);
+      return point;
+    },
+  };
+};
+
+const player1 = createPlayer("Player X", "X", 0);
+const player2 = createPlayer("Player O", "O", 0);
+
 squares.forEach((element) => {
   element.addEventListener("click", (event) => {
     const col = event.target.getAttribute("data-col");
     const row = event.target.getAttribute("data-row");
 
     createMove(col, row, event.target);
-
+    player.textContent = playerXTurn ? "Player 1" : "Player 2";
     // console.log(`Square clicked at col: ${col}, row: ${row}`);
   });
 });
@@ -26,8 +52,13 @@ function createMove(col, row, event) {
   }
 
   if (checkWin(marker)) {
-    const dialog = document.querySelector("#dialog-container");
-    dialog.showModal();
+    dialog.classList.add("open");
+    if (playerXTurn) {
+      player1.addPoint();
+      player1Point.forEach((player1point) => {
+        player1point.textContent = player1.showPoint();
+      });
+    }
   } else {
     playerXTurn = !playerXTurn;
   }
@@ -73,4 +104,11 @@ function checkWin(marker) {
   }
 
   return false;
+}
+
+function resetGame() {
+  dialog.classList.remove("open");
+  squares.forEach((square) => {
+    square.textContent = "";
+  });
 }
