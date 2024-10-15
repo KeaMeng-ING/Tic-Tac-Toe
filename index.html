@@ -9,7 +9,12 @@
   <body>
     <div class="big-container">
       <div class="player-turn">
-        <h1>It's <span class="player">Player 1</span>'s Turn (X)</h1>
+        <h1 class="info">
+          It's <span class="player blue">Player 1</span>'s Turn (<span
+            class="symbol blue"
+            >X</span
+          >)
+        </h1>
       </div>
       <div class="container">
         <div class="square" data-col="0" data-row="0"></div>
@@ -25,32 +30,32 @@
 
       <div class="player-score">
         <div class="left-score">
-          <p>Player 1</p>
-          <p class="one-score">0</p>
+          <h3 class="score blue">Player 1</h3>
+          <h3 class="one-score score">0</h3>
         </div>
         <div class="line"></div>
         <div class="right-score">
-          <p>Player 2</p>
-          <p class="2-score">0</p>
+          <h3 class="score red">Player 2</h3>
+          <h3 class="two-score score">0</h3>
         </div>
       </div>
     </div>
 
     <dialog id="dialog-container">
       <div class="dialog-box">
-        <h3>Player 1 Wins</h3>
+        <h3 class="title"><span class="player blue">Player 1</span> Wins</h3>
 
         <div class="dialog-scoreboard">
-          <div class="player1wins playerwin">
-            <h2 class="one-score">0</h2>
-            <p>Player 1 Wins</p>
+          <div class="playerwin">
+            <h2 class="one-score dialog-score">0</h2>
+            <h3 class="dialog-player blue">Player 1</h3>
           </div>
 
           <div class="line"></div>
 
-          <div class="player2wins playerwin">
-            <h2 class="2-score">0</h2>
-            <p>Player 1 Wins</p>
+          <div class="playerwin">
+            <h2 class="two-score dialog-score">0</h2>
+            <h3 class="dialog-player red">Player 2</h3>
           </div>
         </div>
 

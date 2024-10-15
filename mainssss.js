@@ -5,7 +5,7 @@ const GameBoard = (() => {
     ["", "", ""],
   ];
 
-  const getBoard = () => [...board];
+  const getBoard = () => board;
 
   const resetBoard = () => {
     for (let i = 0; i < board.length; i++) {
@@ -15,19 +15,8 @@ const GameBoard = (() => {
     }
   };
 
-  const checkDraw = () => {
-    for (let i = 0; i < board.length; i++) {
-      for (let j = 0; j < board[i].length; j++) {
-        if (board[i][j] === "") {
-          return false;
-        }
-      }
-    }
-    return true;
-  };
-
   const setMove = (row, col, marker) => {
-    if (board[row][col] == "") {
+    if (board[row][col] === "") {
       board[row][col] = marker;
       return true;
     }
@@ -35,6 +24,7 @@ const GameBoard = (() => {
   };
 
   const checkWin = (marker) => {
+    // Check rows
     for (let row = 0; row < 3; row++) {
       if (
         board[row][0] === marker &&
@@ -75,16 +65,29 @@ const GameBoard = (() => {
     return false;
   };
 
-  return { getBoard, checkDraw, setMove, checkWin, resetBoard };
+  const checkDraw = () => {
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        if (board[i][j] === "") {
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
+  return { getBoard, resetBoard, setMove, checkWin, checkDraw };
 })();
 
 const DisplayController = (() => {
   const squares = document.querySelectorAll(".square");
   const playAgainButton = document.querySelector(".play-again-button");
   const dialog = document.querySelector("#dialog-container");
-
+  const playerDisplay = document.querySelector(".player");
   const player1Point = document.querySelectorAll(".one-score");
   const player2Point = document.querySelectorAll(".two-score");
+  const symbolDisplay = document.querySelector(".symbol");
+  const title = document.querySelector(".title");
 
   let playerXTurn = true;
 
@@ -93,21 +96,14 @@ const DisplayController = (() => {
   });
 
   const updateDisplay = () => {
-    const symbolDisplay = document.querySelector(".symbol");
-    const playerDisplay = document.querySelector(".player");
-    playerDisplay.classList.remove("red", "blue");
-    symbolDisplay.classList.remove("red", "blue");
     playerDisplay.textContent = playerXTurn ? "Player 1" : "Player 2";
-    playerDisplay.classList.add(playerXTurn ? "blue" : "red");
     symbolDisplay.textContent = playerXTurn ? "X" : "O";
-    symbolDisplay.classList.add(playerXTurn ? "blue" : "red");
   };
 
   const resetGame = () => {
     dialog.classList.remove("open");
     squares.forEach((square) => {
       square.textContent = "";
-      square.classList.remove("x", "o"); // Remove color classes
     });
     GameBoard.resetBoard();
     playerXTurn = true;
@@ -115,15 +111,12 @@ const DisplayController = (() => {
   };
 
   const handleSquareClick = (event) => {
-    const title = document.querySelector(".title");
     const col = event.target.getAttribute("data-col");
     const row = event.target.getAttribute("data-row");
     const marker = playerXTurn ? "X" : "O";
-    const playerDisplay = document.querySelector(".player");
 
     if (GameBoard.setMove(row, col, marker)) {
       event.target.textContent = marker;
-      event.target.classList.add(marker.toLocaleLowerCase());
 
       if (GameBoard.checkWin(marker)) {
         dialog.classList.add("open");
