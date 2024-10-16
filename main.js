@@ -107,11 +107,26 @@ const DisplayController = (() => {
     dialog.classList.remove("open");
     squares.forEach((square) => {
       square.textContent = "";
-      square.classList.remove("x", "o"); // Remove color classes
+      square.classList.remove("x", "o");
     });
     GameBoard.resetBoard();
     playerXTurn = true;
     updateDisplay();
+  };
+
+  const updatePlayerPoints = (player, playerPoint) => {
+    player.addPoint();
+    playerPoint.forEach((point) => {
+      point.textContent = player.showPoint();
+    });
+  };
+
+  const openDialog = () => {
+    const playerDisplay = document.querySelector(".player-title");
+    playerDisplay.classList.remove("blue", "red");
+    dialog.classList.add("open");
+    playerDisplay.textContent = `Player ${playerXTurn ? "1" : "2"}`;
+    playerDisplay.classList.add(playerXTurn ? "blue" : "red");
   };
 
   const handleSquareClick = (event) => {
@@ -119,26 +134,17 @@ const DisplayController = (() => {
     const col = event.target.getAttribute("data-col");
     const row = event.target.getAttribute("data-row");
     const marker = playerXTurn ? "X" : "O";
-    const playerDisplay = document.querySelector(".player");
 
     if (GameBoard.setMove(row, col, marker)) {
       event.target.textContent = marker;
       event.target.classList.add(marker.toLocaleLowerCase());
 
       if (GameBoard.checkWin(marker)) {
-        dialog.classList.add("open");
-        title.textContent = `Player ${playerXTurn ? "1" : "2"} Wins`;
-        if (playerXTurn) {
-          player1.addPoint();
-          player1Point.forEach((point) => {
-            point.textContent = player1.showPoint();
-          });
-        } else {
-          player2.addPoint();
-          player2Point.forEach((point) => {
-            point.textContent = player2.showPoint();
-          });
-        }
+        openDialog();
+        updatePlayerPoints(
+          playerXTurn ? player1 : player2,
+          playerXTurn ? player1Point : player2Point
+        );
       } else if (GameBoard.checkDraw()) {
         dialog.classList.add("open");
         title.textContent = "Draw";
@@ -152,8 +158,6 @@ const DisplayController = (() => {
   squares.forEach((square) => {
     square.addEventListener("click", handleSquareClick);
   });
-
-  return { resetGame };
 })();
 
 const createPlayer = (name, symbol, point = 0) => {
